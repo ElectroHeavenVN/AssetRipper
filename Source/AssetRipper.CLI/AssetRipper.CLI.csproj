@@ -4,6 +4,8 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+	<OutputPath>..\0Bins\AssetRipper.CLI\$(Configuration)\</OutputPath>
+	<IntermediateOutputPath>..\0Bins\obj\AssetRipper.CLI\$(Configuration)\</IntermediateOutputPath>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

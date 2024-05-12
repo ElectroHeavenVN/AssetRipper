@@ -46,11 +46,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IssueTemplates", "IssueTemp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{88179FFC-0863-4C4F-9860-68EB1471E59F}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\cla.yml = .github\workflows\cla.yml
-		.github\workflows\docfx_build.yml = .github\workflows\docfx_build.yml
-		.github\workflows\greetings.yml = .github\workflows\greetings.yml
-		.github\workflows\publish.yml = .github\workflows\publish.yml
 		.github\workflows\test.yml = .github\workflows\test.yml
+		.github\workflows\publish-cli.yml = .github\workflows\publish-cli.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{E3A52FDC-1C4D-430F-A1BA-BFC5671181D4}"
@@ -167,7 +164,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssetRipper.Web", "Source\A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssetRipper.GUI.Web", "Source\AssetRipper.GUI.Web\AssetRipper.GUI.Web.csproj", "{3FFE76F1-7204-4CD9-AB08-AD099E8D2D57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetRipper.CLI", "Source\AssetRipper.CLI\AssetRipper.CLI.csproj", "{F701A27C-E059-40D7-95CC-18A7DDB469E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssetRipper.CLI", "Source\AssetRipper.CLI\AssetRipper.CLI.csproj", "{F701A27C-E059-40D7-95CC-18A7DDB469E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
