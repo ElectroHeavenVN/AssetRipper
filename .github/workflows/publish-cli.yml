@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         config:
-          - { name: win_x64, os: windows-latest, runtime: win-x64, executable: AssetRipper.CLI.exe }
+          - { os: windows-latest, runtime: win-x64, executable: AssetRipper.CLI.exe }
 
     steps:
       - uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: AssetRipper_${{ matrix.config.name }}
+          name: AssetRipper.CLI
           path: |
             ./Source/0Bins/AssetRipper.CLI/Release/${{ matrix.config.runtime }}/publish/${{ matrix.config.executable }}
             ./Source/0Bins/AssetRipper.CLI/Release/${{ matrix.config.runtime }}/publish/*.dll
