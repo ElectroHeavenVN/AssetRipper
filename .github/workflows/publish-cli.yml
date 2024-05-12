@@ -1,0 +1,42 @@
+name: Publish CLI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ${{ matrix.config.os }}
+
+    strategy:
+      matrix:
+        config:
+          - { name: win_x64, os: windows-latest, runtime: win-x64, executable: AssetRipper.CLI.exe }
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Publish
+        run: dotnet publish -c Release -r ${{ matrix.config.runtime }}
+        working-directory: ./Source/AssetRipper.CLI/
+
+      - name: List Files
+        shell: bash
+        run: ls -R ./Source/0Bins/AssetRipper.CLI/Release/
+
+      - name: List Files
+        shell: bash
+        run: date -u > ./Source/0Bins/AssetRipper.CLI/Release/${{ matrix.config.runtime }}/publish/compile_time.txt
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: AssetRipper_${{ matrix.config.name }}
+          path: |
+            ./Source/0Bins/AssetRipper.CLI/Release/${{ matrix.config.runtime }}/publish/${{ matrix.config.executable }}
+            ./Source/0Bins/AssetRipper.CLI/Release/${{ matrix.config.runtime }}/publish/*.dll
+            ./Source/0Bins/AssetRipper.CLI/Release/${{ matrix.config.runtime }}/publish/compile_time.txt
+          if-no-files-found: error
