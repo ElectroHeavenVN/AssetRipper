@@ -36,7 +36,5 @@ jobs:
         with:
           name: AssetRipper.CLI
           path: |
-            ./Source/0Bins/AssetRipper.CLI/Release/${{ matrix.config.runtime }}/publish/${{ matrix.config.executable }}
-            ./Source/0Bins/AssetRipper.CLI/Release/${{ matrix.config.runtime }}/publish/*.dll
-            ./Source/0Bins/AssetRipper.CLI/Release/${{ matrix.config.runtime }}/publish/compile_time.txt
+            ./Source/0Bins/AssetRipper.CLI/Release/${{ matrix.config.runtime }}/publish
           if-no-files-found: error
