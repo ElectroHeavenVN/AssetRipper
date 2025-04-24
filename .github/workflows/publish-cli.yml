@@ -18,7 +18,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 9.0.x
       - name: Publish
         run: dotnet publish -c Release -r ${{ matrix.config.runtime }}
         working-directory: ./Source/AssetRipper.CLI/
@@ -41,7 +41,7 @@ jobs:
         with:
           files: ./Source/0Bins/AssetRipper.CLI/Release/${{ matrix.config.runtime }}/publish/*
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: Latest build
+          name: AssetRipper CLI
           draft: false
           prerelease: false
           tag_name: latest
