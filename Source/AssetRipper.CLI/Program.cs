@@ -1,7 +1,6 @@
 ﻿using AssetRipper.Export.UnityProjects;
 using AssetRipper.Export.UnityProjects.Configuration;
 using AssetRipper.Processing;
-using System.IO;
 
 internal class Program
 {
