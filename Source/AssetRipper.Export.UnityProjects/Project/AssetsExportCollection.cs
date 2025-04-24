@@ -1,7 +1,5 @@
 using AssetRipper.Assets;
 using AssetRipper.Assets.Collections;
-using AssetRipper.Assets.Export;
-using AssetRipper.Assets.Metadata;
 
 namespace AssetRipper.Export.UnityProjects.Project
 {
@@ -30,9 +28,9 @@ namespace AssetRipper.Export.UnityProjects.Project
 			return m_exportIDs[asset];
 		}
 
-		protected override bool ExportInner(IExportContainer container, string filePath, string dirPath)
+		protected override bool ExportInner(IExportContainer container, string filePath, string dirPath, FileSystem fileSystem)
 		{
-			return AssetExporter.Export(container, ExportableAssets, filePath);
+			return AssetExporter.Export(container, ExportableAssets, filePath, fileSystem);
 		}
 
 		public override IEnumerable<IUnityObjectBase> Assets

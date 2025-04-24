@@ -1,5 +1,4 @@
 ﻿using AssetRipper.Assets;
-using AssetRipper.Assets.Export;
 using AssetRipper.SourceGenerated.Classes.ClassID_28;
 using AssetRipper.SourceGenerated.Extensions;
 
@@ -21,9 +20,9 @@ namespace AssetRipper.Export.UnityProjects.Textures
 			}
 		}
 
-		public override bool Export(IExportContainer container, IUnityObjectBase asset, string path)
+		public override bool Export(IExportContainer container, IUnityObjectBase asset, string path, FileSystem fileSystem)
 		{
-			File.WriteAllBytes(path, ((ITexture2D)asset).GetImageData());
+			fileSystem.File.WriteAllBytes(path, ((ITexture2D)asset).GetImageData());
 			return true;
 		}
 	}

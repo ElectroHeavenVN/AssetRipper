@@ -1,7 +1,5 @@
 ﻿using AssetRipper.Assets;
 using AssetRipper.Assets.Collections;
-using AssetRipper.Assets.Export;
-using AssetRipper.Assets.Metadata;
 using AssetRipper.IO.Files.SerializedFiles;
 
 namespace AssetRipper.Export.UnityProjects
@@ -14,7 +12,7 @@ namespace AssetRipper.Export.UnityProjects
 		{
 		}
 
-		bool IExportCollection.Export(IExportContainer container, string projectDirectory)
+		bool IExportCollection.Export(IExportContainer container, string projectDirectory, FileSystem fileSystem)
 		{
 			throw new NotSupportedException();
 		}

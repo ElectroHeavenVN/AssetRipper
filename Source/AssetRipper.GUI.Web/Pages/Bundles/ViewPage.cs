@@ -1,8 +1,7 @@
 ﻿using AssetRipper.Assets.Bundles;
 using AssetRipper.Assets.Collections;
 using AssetRipper.GUI.Web.Paths;
-using AssetRipper.Web.Extensions;
-using Microsoft.AspNetCore.Http;
+using AssetRipper.IO.Files;
 
 namespace AssetRipper.GUI.Web.Pages.Bundles;
 
@@ -71,37 +70,20 @@ public sealed class ViewPage : DefaultPage
 				}
 			}
 		}
-	}
 
-	public static Task HandlePostRequest(HttpContext context)
-	{
-		string? json = context.Request.Form[PathLinking.FormKey];
-		if (string.IsNullOrEmpty(json))
+		if (Bundle.FailedFiles.Count > 0)
 		{
-			return context.Response.NotFound();
-		}
-
-		BundlePath path;
-		try
-		{
-			path = BundlePath.FromJson(json);
-		}
-		catch (Exception ex)
-		{
-			return context.Response.NotFound(ex.ToString());
-		}
-
-		if (!GameFileLoader.IsLoaded)
-		{
-			return context.Response.NotFound("No files loaded.");
-		}
-		else if (!GameFileLoader.GameBundle.TryGetBundle(path, out Bundle? bundle))
-		{
-			return context.Response.NotFound($"Bundle could not be resolved: {path}");
-		}
-		else
-		{
-			return new ViewPage() { Bundle = bundle, Path = path }.WriteToResponse(context.Response);
+			new H2(writer).Close(Localization.FailedFiles);
+			using (new Ul(writer).End())
+			{
+				for (int i = 0; i < Bundle.FailedFiles.Count; i++)
+				{
+					using (new Li(writer).End())
+					{
+						PathLinking.WriteLink(writer, Path.GetFailedFile(i), Bundle.FailedFiles[i].NameFixed);
+					}
+				}
+			}
 		}
 	}
 }

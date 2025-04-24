@@ -1,5 +1,5 @@
 ﻿using AssetRipper.Import.Logging;
-using AssetRipper.Import.Utils;
+using AssetRipper.IO.Files.Utils;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace AssetRipper.Import.Structure
@@ -8,6 +8,7 @@ namespace AssetRipper.Import.Structure
 	{
 		private const string ZipExtension = ".zip";
 		private const string ApkExtension = ".apk";
+		private const string ApksExtension = ".apks";
 		private const string ObbExtension = ".obb";
 		private const string XapkExtension = ".xapk";
 		private const string VpkExtension = ".vpk"; //PS Vita
@@ -30,6 +31,7 @@ namespace AssetRipper.Import.Structure
 					case IpaExtension:
 						result.Add(ExtractZip(path));
 						break;
+					case ApksExtension:
 					case XapkExtension:
 						result.Add(ExtractXapk(path));
 						break;
@@ -48,7 +50,7 @@ namespace AssetRipper.Import.Structure
 				return zipFilePath;
 			}
 
-			string outputDirectory = TempFolderManager.CreateNewRandomTempFolder();
+			string outputDirectory = TemporaryFileStorage.CreateTemporaryFolder();
 			DecompressZipArchive(zipFilePath, outputDirectory);
 			return outputDirectory;
 		}
@@ -60,8 +62,8 @@ namespace AssetRipper.Import.Structure
 				return xapkFilePath;
 			}
 
-			string intermediateDirectory = TempFolderManager.CreateNewRandomTempFolder();
-			string outputDirectory = TempFolderManager.CreateNewRandomTempFolder();
+			string intermediateDirectory = TemporaryFileStorage.CreateTemporaryFolder();
+			string outputDirectory = TemporaryFileStorage.CreateTemporaryFolder();
 			DecompressZipArchive(xapkFilePath, intermediateDirectory);
 			foreach (string filePath in Directory.GetFiles(intermediateDirectory))
 			{

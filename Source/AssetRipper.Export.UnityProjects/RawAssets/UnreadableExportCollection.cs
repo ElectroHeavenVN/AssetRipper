@@ -1,10 +1,7 @@
 ﻿using AssetRipper.Assets;
 using AssetRipper.Assets.Collections;
-using AssetRipper.Assets.Export;
-using AssetRipper.Assets.Metadata;
 using AssetRipper.Import.AssetCreation;
 using AssetRipper.IO.Files.SerializedFiles;
-using AssetRipper.IO.Files.Utils;
 
 namespace AssetRipper.Export.UnityProjects.RawAssets
 {
@@ -35,16 +32,16 @@ namespace AssetRipper.Export.UnityProjects.RawAssets
 			return MetaPtr.NullPtr;
 		}
 
-		public override bool Export(IExportContainer container, string projectDirectory)
+		public override bool Export(IExportContainer container, string projectDirectory, FileSystem fileSystem)
 		{
-			string name = DirectoryUtils.FixInvalidPathCharacters(Asset.Name);
-			string resourcePath = Path.Combine(projectDirectory, "AssetRipper", "UnreadableAssets", Asset.ClassName, $"{name}.unreadable");
-			string subPath = Path.GetDirectoryName(resourcePath)!;
-			Directory.CreateDirectory(subPath);
-			string resFileName = Path.GetFileName(resourcePath);
-			string fileName = GetUniqueFileName(subPath, resFileName);
-			string filePath = Path.Combine(subPath, fileName);
-			return AssetExporter.Export(container, Asset, filePath);
+			string name = FileSystem.FixInvalidPathCharacters(Asset.Name);
+			string resourcePath = fileSystem.Path.Join(projectDirectory, "AssetRipper", "UnreadableAssets", Asset.ClassName, $"{name}.unreadable");
+			string subPath = fileSystem.Path.GetDirectoryName(resourcePath)!;
+			fileSystem.Directory.Create(subPath);
+			string resFileName = fileSystem.Path.GetFileName(resourcePath);
+			string fileName = GetUniqueFileName(subPath, resFileName, fileSystem);
+			string filePath = fileSystem.Path.Join(subPath, fileName);
+			return AssetExporter.Export(container, Asset, filePath, fileSystem);
 		}
 
 		public override long GetExportID(IExportContainer container, IUnityObjectBase asset)

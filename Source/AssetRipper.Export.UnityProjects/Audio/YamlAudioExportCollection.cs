@@ -1,5 +1,4 @@
 ﻿using AssetRipper.Assets;
-using AssetRipper.Assets.Export;
 using AssetRipper.SourceGenerated.Classes.ClassID_83;
 using AssetRipper.SourceGenerated.Extensions;
 using AssetRipper.SourceGenerated.Subclasses.StreamedResource;
@@ -12,7 +11,7 @@ namespace AssetRipper.Export.UnityProjects.Audio
 		{
 		}
 
-		protected override bool ExportInner(IExportContainer container, string filePath, string dirPath)
+		protected override bool ExportInner(IExportContainer container, string filePath, string dirPath, FileSystem fileSystem)
 		{
 			IStreamedResource? resource = Asset.Resource;
 			if (resource is not null)
@@ -23,8 +22,8 @@ namespace AssetRipper.Export.UnityProjects.Audio
 				if (resource.TryGetContent(Asset.Collection, out byte[]? data))
 				{
 					string resPath = filePath + ".resS";
-					System.IO.File.WriteAllBytes(resPath, data);
-					resource.Source = System.IO.Path.GetRelativePath(dirPath, resPath);
+					fileSystem.File.WriteAllBytes(resPath, data);
+					resource.Source = fileSystem.Path.GetRelativePath(dirPath, resPath);
 				}
 				else
 				{
@@ -32,7 +31,7 @@ namespace AssetRipper.Export.UnityProjects.Audio
 					resource.Offset = 0;
 					resource.Size = 0;
 				}
-				bool result = base.ExportInner(container, filePath, dirPath);
+				bool result = base.ExportInner(container, filePath, dirPath, fileSystem);
 				resource.Source = originalSource;
 				resource.Offset = originalOffset;
 				resource.Size = originalSize;
@@ -40,7 +39,7 @@ namespace AssetRipper.Export.UnityProjects.Audio
 			}
 			else
 			{
-				return base.ExportInner(container, filePath, dirPath);
+				return base.ExportInner(container, filePath, dirPath, fileSystem);
 			}
 		}
 

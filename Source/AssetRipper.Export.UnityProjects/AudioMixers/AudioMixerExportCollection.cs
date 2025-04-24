@@ -1,8 +1,5 @@
 using AssetRipper.Assets;
-using AssetRipper.Assets.Export;
-using AssetRipper.Assets.Metadata;
 using AssetRipper.Export.UnityProjects.Project;
-using AssetRipper.Export.UnityProjects.Utils;
 using AssetRipper.SourceGenerated.Classes.ClassID_240;
 using AssetRipper.SourceGenerated.Classes.ClassID_243;
 using AssetRipper.SourceGenerated.Classes.ClassID_273;
@@ -45,10 +42,10 @@ namespace AssetRipper.Export.UnityProjects.AudioMixers
 			return exportID;
 		}
 
-		protected override bool ExportInner(IExportContainer container, string filePath, string dirPath)
+		protected override bool ExportInner(IExportContainer container, string filePath, string dirPath, FileSystem fileSystem)
 		{
-			UnityPatchUtils.ApplyPatchFromText(AudioMixerPatchText, "AudioMixerPostprocessor", dirPath);
-			return base.ExportInner(container, filePath, dirPath);
+			UnityPatches.ApplyPatchFromText(AudioMixerPatchText, "AudioMixerPostprocessor", dirPath, fileSystem);
+			return base.ExportInner(container, filePath, dirPath, fileSystem);
 		}
 
 		private const string AudioMixerPatchText = """

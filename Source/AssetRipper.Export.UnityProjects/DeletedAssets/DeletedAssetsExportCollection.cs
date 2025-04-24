@@ -1,7 +1,5 @@
 ﻿using AssetRipper.Assets;
 using AssetRipper.Assets.Collections;
-using AssetRipper.Assets.Export;
-using AssetRipper.Assets.Metadata;
 using AssetRipper.Import.Logging;
 using AssetRipper.IO.Files.SerializedFiles;
 using AssetRipper.Processing;
@@ -31,7 +29,7 @@ public sealed record DeletedAssetsExportCollection(DeletedAssetsInformation Asse
 		return MetaPtr.CreateMissingReference(asset.ClassID, container.ToExportType(asset.GetType()));
 	}
 
-	bool IExportCollection.Export(IExportContainer container, string projectDirectory)
+	bool IExportCollection.Export(IExportContainer container, string projectDirectory, FileSystem fileSystem)
 	{
 		throw new NotSupportedException();
 	}

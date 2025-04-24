@@ -1,5 +1,5 @@
 ﻿using AssetRipper.Assets;
-using AssetRipper.Assets.Export;
+using AssetRipper.Export.Modules.Audio;
 using AssetRipper.Export.UnityProjects.Configuration;
 using AssetRipper.Import.Logging;
 using AssetRipper.SourceGenerated.Classes.ClassID_83;
@@ -44,7 +44,7 @@ namespace AssetRipper.Export.UnityProjects.Audio
 			return false;
 		}
 
-		public override bool Export(IExportContainer container, IUnityObjectBase asset, string path)
+		public override bool Export(IExportContainer container, IUnityObjectBase asset, string path, FileSystem fileSystem)
 		{
 			throw new NotSupportedException();
 		}

@@ -1,7 +1,5 @@
 ﻿using AssetRipper.Assets;
 using AssetRipper.Assets.Collections;
-using AssetRipper.Assets.Export;
-using AssetRipper.Assets.Metadata;
 using AssetRipper.IO.Files.SerializedFiles;
 
 namespace AssetRipper.Export.UnityProjects
@@ -14,7 +12,7 @@ namespace AssetRipper.Export.UnityProjects
 		/// <param name="container"></param>
 		/// <param name="projectDirectory">The directory containing the whole project including Assets and ProjectSettings.</param>
 		/// <returns>True if export was successful.</returns>
-		bool Export(IExportContainer container, string projectDirectory);
+		bool Export(IExportContainer container, string projectDirectory, FileSystem fileSystem);
 		/// <summary>
 		/// Is the asset part of this collection?
 		/// </summary>

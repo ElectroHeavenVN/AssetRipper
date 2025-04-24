@@ -11,7 +11,7 @@ using AssetRipper.SourceGenerated.Classes.ClassID_114;
 
 namespace AssetRipper.Import.Structure.Assembly.Serializable
 {
-	public sealed class SerializableStructure : UnityAssetBase
+	public sealed class SerializableStructure : UnityAssetBase, IDeepCloneable
 	{
 		public override int SerializedVersion => Type.Version;
 		public override bool FlowMappedInYaml => Type.FlowMappedInYaml;
@@ -20,14 +20,14 @@ namespace AssetRipper.Import.Structure.Assembly.Serializable
 		{
 			Depth = depth;
 			Type = type ?? throw new ArgumentNullException(nameof(type));
-			Fields = new SerializableField[type.FieldCount];
+			Fields = new SerializableValue[type.Fields.Count];
 		}
 
 		public void Read(ref EndianSpanReader reader, UnityVersion version, TransferInstructionFlags flags)
 		{
 			for (int i = 0; i < Fields.Length; i++)
 			{
-				SerializableType.Field etalon = Type.GetField(i);
+				SerializableType.Field etalon = Type.Fields[i];
 				if (IsAvailable(etalon))
 				{
 					Fields[i].Read(ref reader, version, flags, Depth, etalon);
@@ -39,7 +39,7 @@ namespace AssetRipper.Import.Structure.Assembly.Serializable
 		{
 			for (int i = 0; i < Fields.Length; i++)
 			{
-				SerializableType.Field etalon = Type.GetField(i);
+				SerializableType.Field etalon = Type.Fields[i];
 				if (IsAvailable(etalon))
 				{
 					Fields[i].Write(writer, etalon);
@@ -56,7 +56,7 @@ namespace AssetRipper.Import.Structure.Assembly.Serializable
 				bool hasEmittedFirstField = false;
 				for (int i = 0; i < Fields.Length; i++)
 				{
-					SerializableType.Field etalon = Type.GetField(i);
+					SerializableType.Field etalon = Type.Fields[i];
 					if (IsAvailable(etalon))
 					{
 						if (hasEmittedFirstField)
@@ -85,7 +85,7 @@ namespace AssetRipper.Import.Structure.Assembly.Serializable
 		{
 			for (int i = 0; i < Fields.Length; i++)
 			{
-				SerializableType.Field etalon = Type.GetField(i);
+				SerializableType.Field etalon = Type.Fields[i];
 				if (IsAvailable(etalon))
 				{
 					foreach ((string, PPtr) pair in Fields[i].FetchDependencies(etalon))
@@ -104,7 +104,7 @@ namespace AssetRipper.Import.Structure.Assembly.Serializable
 			{
 				return true;
 			}
-			if (field.IsArray)
+			if (field.ArrayDepth > 0)
 			{
 				return false;
 			}
@@ -146,14 +146,61 @@ namespace AssetRipper.Import.Structure.Assembly.Serializable
 
 		public int Depth { get; }
 		public SerializableType Type { get; }
-		public SerializableField[] Fields { get; }
+		public SerializableValue[] Fields { get; }
+
+		public ref SerializableValue this[string name]
+		{
+			get
+			{
+				if (TryGetIndex(name, out int index))
+				{
+					return ref Fields[index];
+				}
+				throw new KeyNotFoundException($"Field {name} wasn't found in {Type.Name}");
+			}
+		}
+
+		public bool ContainsField(string name) => TryGetIndex(name, out _);
+
+		public bool TryGetField(string name, out SerializableValue field)
+		{
+			if (TryGetIndex(name, out int index))
+			{
+				field = Fields[index];
+				return true;
+			}
+			field = default;
+			return false;
+		}
+
+		public SerializableValue? TryGetField(string name)
+		{
+			if (TryGetIndex(name, out int index))
+			{
+				return Fields[index];
+			}
+			return null;
+		}
+
+		public bool TryGetIndex(string name, out int index)
+		{
+			for (int i = 0; i < Fields.Length; i++)
+			{
+				if (Type.Fields[i].Name == name)
+				{
+					index = i;
+					return true;
+				}
+			}
+			index = -1;
+			return false;
+		}
 
 		public override void CopyValues(IUnityAssetBase? source, PPtrConverter converter)
 		{
 			if (source is null)
 			{
 				Reset();
-				InitializeFields(converter.TargetCollection.Version);
 			}
 			else
 			{
@@ -171,14 +218,14 @@ namespace AssetRipper.Import.Structure.Assembly.Serializable
 			{
 				for (int i = 0; i < Fields.Length; i++)
 				{
-					SerializableField sourceField = source.Fields[i];
+					SerializableValue sourceField = source.Fields[i];
 					if (sourceField.CValue is null)
 					{
 						Fields[i] = sourceField;
 					}
 					else
 					{
-						Fields[i].CopyValues(sourceField, converter.TargetCollection.Version, Depth, Type.Fields[i], converter);
+						Fields[i].CopyValues(sourceField, Depth, Type.Fields[i], converter);
 					}
 				}
 			}
@@ -195,8 +242,8 @@ namespace AssetRipper.Import.Structure.Assembly.Serializable
 							index = j;
 						}
 					}
-					SerializableField sourceField = index < 0 ? default : source.Fields[index];
-					Fields[i].CopyValues(sourceField, converter.TargetCollection.Version, Depth, Type.Fields[i], converter);
+					SerializableValue sourceField = index < 0 ? default : source.Fields[index];
+					Fields[i].CopyValues(sourceField, Depth, Type.Fields[i], converter);
 				}
 			}
 		}
@@ -208,9 +255,14 @@ namespace AssetRipper.Import.Structure.Assembly.Serializable
 			return clone;
 		}
 
+		IUnityAssetBase IDeepCloneable.DeepClone(PPtrConverter converter) => DeepClone(converter);
+
 		public override void Reset()
 		{
-			((Span<SerializableField>)Fields).Clear();
+			foreach (SerializableValue field in Fields)
+			{
+				field.Reset();
+			}
 		}
 
 		public void InitializeFields(UnityVersion version)

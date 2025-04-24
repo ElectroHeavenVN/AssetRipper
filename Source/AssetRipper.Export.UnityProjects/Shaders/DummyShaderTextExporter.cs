@@ -1,5 +1,4 @@
 ﻿using AssetRipper.Assets;
-using AssetRipper.Assets.Export;
 using AssetRipper.Export.Modules.Shaders.IO;
 using AssetRipper.SourceGenerated.Classes.ClassID_48;
 using AssetRipper.SourceGenerated.Extensions;
@@ -35,9 +34,9 @@ namespace AssetRipper.Export.UnityProjects.Shaders
 
 			""".Replace("\r", "");
 
-		public override bool Export(IExportContainer container, IUnityObjectBase asset, string path)
+		public override bool Export(IExportContainer container, IUnityObjectBase asset, string path, FileSystem fileSystem)
 		{
-			using FileStream fileStream = File.Create(path);
+			using Stream fileStream = fileSystem.File.Create(path);
 			using InvariantStreamWriter writer = new InvariantStreamWriter(fileStream);
 			ExportShader((IShader)asset, writer);
 			return true;

@@ -32,73 +32,78 @@ partial class CustomInjectedObjectBase
 		}
 	}
 
+	private static MethodInfo GetFirstMethod(string name)
+	{
+		return typeof(AssetWalker).GetMethods(BindingFlags.Public | BindingFlags.Instance).First(m => m.Name == name);
+	}
+
 	private bool EnterList(AssetWalker walker, Type elementType, object? list)
 	{
-		return (bool)typeof(AssetWalker).GetMethod(nameof(AssetWalker.EnterList), BindingFlags.Public | BindingFlags.Instance)
-			!.MakeGenericMethod(elementType)
+		return (bool)GetFirstMethod(nameof(AssetWalker.EnterList))
+			.MakeGenericMethod(elementType)
 			.Invoke(walker, [list])!;
 	}
 
 	private void ExitList(AssetWalker walker, Type elementType, object? list)
 	{
-		typeof(AssetWalker).GetMethod(nameof(AssetWalker.ExitList), BindingFlags.Public | BindingFlags.Instance)
-			!.MakeGenericMethod(elementType)
+		GetFirstMethod(nameof(AssetWalker.ExitList))
+			.MakeGenericMethod(elementType)
 			.Invoke(walker, [list]);
 	}
 
 	private bool EnterDictionary(AssetWalker walker, Type keyType, Type valueType, object? dictionary)
 	{
-		return (bool)typeof(AssetWalker).GetMethod(nameof(AssetWalker.EnterDictionary), BindingFlags.Public | BindingFlags.Instance)
-			!.MakeGenericMethod(keyType, valueType)
+		return (bool)GetFirstMethod(nameof(AssetWalker.EnterDictionary))
+			.MakeGenericMethod(keyType, valueType)
 			.Invoke(walker, [dictionary])!;
 	}
 
 	private void ExitDictionary(AssetWalker walker, Type keyType, Type valueType, object? dictionary)
 	{
-		typeof(AssetWalker).GetMethod(nameof(AssetWalker.ExitDictionary), BindingFlags.Public | BindingFlags.Instance)
-			!.MakeGenericMethod(keyType, valueType)
+		GetFirstMethod(nameof(AssetWalker.ExitDictionary))
+			.MakeGenericMethod(keyType, valueType)
 			.Invoke(walker, [dictionary]);
 	}
 
 	private bool EnterDictionaryPair(AssetWalker walker, Type keyType, Type valueType, object? pair)
 	{
-		return (bool)typeof(AssetWalker).GetMethod(nameof(AssetWalker.EnterDictionaryPair), BindingFlags.Public | BindingFlags.Instance)
-			!.MakeGenericMethod(keyType, valueType)
+		return (bool)GetFirstMethod(nameof(AssetWalker.EnterDictionaryPair))
+			.MakeGenericMethod(keyType, valueType)
 			.Invoke(walker, [pair])!;
 	}
 
 	private void DivideDictionaryPair(AssetWalker walker, Type keyType, Type valueType, object? pair)
 	{
-		typeof(AssetWalker).GetMethod(nameof(AssetWalker.DivideDictionaryPair), BindingFlags.Public | BindingFlags.Instance)
-			!.MakeGenericMethod(keyType, valueType)
+		GetFirstMethod(nameof(AssetWalker.DivideDictionaryPair))
+			.MakeGenericMethod(keyType, valueType)
 			.Invoke(walker, [pair]);
 	}
 
 	private void ExitDictionaryPair(AssetWalker walker, Type keyType, Type valueType, object? pair)
 	{
-		typeof(AssetWalker).GetMethod(nameof(AssetWalker.ExitDictionaryPair), BindingFlags.Public | BindingFlags.Instance)
-			!.MakeGenericMethod(keyType, valueType)
+		GetFirstMethod(nameof(AssetWalker.ExitDictionaryPair))
+			.MakeGenericMethod(keyType, valueType)
 			.Invoke(walker, [pair]);
 	}
 
 	private bool EnterPair(AssetWalker walker, Type keyType, Type valueType, object? pair)
 	{
-		return (bool)typeof(AssetWalker).GetMethod(nameof(AssetWalker.EnterPair), BindingFlags.Public | BindingFlags.Instance)
-			!.MakeGenericMethod(keyType, valueType)
+		return (bool)GetFirstMethod(nameof(AssetWalker.EnterPair))
+			.MakeGenericMethod(keyType, valueType)
 			.Invoke(walker, [pair])!;
 	}
 
 	private void DividePair(AssetWalker walker, Type keyType, Type valueType, object? pair)
 	{
-		typeof(AssetWalker).GetMethod(nameof(AssetWalker.DividePair), BindingFlags.Public | BindingFlags.Instance)
-			!.MakeGenericMethod(keyType, valueType)
+		GetFirstMethod(nameof(AssetWalker.DividePair))
+			.MakeGenericMethod(keyType, valueType)
 			.Invoke(walker, [pair]);
 	}
 
 	private void ExitPair(AssetWalker walker, Type keyType, Type valueType, object? pair)
 	{
-		typeof(AssetWalker).GetMethod(nameof(AssetWalker.ExitPair), BindingFlags.Public | BindingFlags.Instance)
-			!.MakeGenericMethod(keyType, valueType)
+		GetFirstMethod(nameof(AssetWalker.ExitPair))
+			.MakeGenericMethod(keyType, valueType)
 			.Invoke(walker, [pair]);
 	}
 
@@ -142,9 +147,7 @@ partial class CustomInjectedObjectBase
 					int count = (int)(type.GetProperty(nameof(AssetList<int>.Count))?.GetValue(list) ?? throw new NullReferenceException());
 					if (count > 0)
 					{
-						MethodInfo divideListMethod = typeof(AssetWalker)
-							.GetMethod(nameof(AssetWalker.DivideList), BindingFlags.Public | BindingFlags.Instance)
-							!.MakeGenericMethod(elementType);
+						MethodInfo divideListMethod = GetFirstMethod(nameof(AssetWalker.DivideList)).MakeGenericMethod(elementType);
 
 						MethodInfo indexer = type.GetMethod("get_Item", BindingFlags.Public | BindingFlags.Instance)!;
 
@@ -173,22 +176,23 @@ partial class CustomInjectedObjectBase
 					int count = (int)type.GetProperty(nameof(AssetDictionary<int, int>.Count))?.GetValue(value)!;
 					if (count > 0)
 					{
-						MethodInfo divideDictionaryMethod = typeof(AssetWalker)
-							.GetMethod(nameof(AssetWalker.DivideDictionary), BindingFlags.Public | BindingFlags.Instance)!
-							.MakeGenericMethod(keyType, valueType);
+						MethodInfo divideDictionaryMethod = GetFirstMethod(nameof(AssetWalker.DivideDictionary)).MakeGenericMethod(keyType, valueType);
 
 						MethodInfo indexer = type.GetMethod("GetPair", BindingFlags.Public | BindingFlags.Instance)!;
+
+						MethodInfo implicitConversion = typeof(AssetPair<,>).MakeGenericType(keyType, valueType).GetMethod("op_Implicit")!;
 
 						int i = 0;
 						while (true)
 						{
 							object pair = indexer.Invoke(value, [i])!;
-							if (EnterDictionaryPair(walker, keyType, valueType, pair))
+							object keyValuePair = implicitConversion.Invoke(null, [pair])!;
+							if (EnterDictionaryPair(walker, keyType, valueType, keyValuePair))
 							{
 								VisitValue(walker, walkType, keyType, pair.GetType().GetProperty(nameof(AssetPair<int, int>.Key))?.GetValue(pair)!);
-								DivideDictionaryPair(walker, keyType, valueType, pair);
+								DivideDictionaryPair(walker, keyType, valueType, keyValuePair);
 								VisitValue(walker, walkType, valueType, pair.GetType().GetProperty(nameof(AssetPair<int, int>.Value))?.GetValue(pair)!);
-								ExitDictionaryPair(walker, keyType, valueType, pair);
+								ExitDictionaryPair(walker, keyType, valueType, keyValuePair);
 							}
 							i++;
 							if (i >= count)
@@ -206,12 +210,13 @@ partial class CustomInjectedObjectBase
 				Type keyType = type.GetGenericArguments()[0];
 				Type valueType = type.GetGenericArguments()[1];
 
-				if (EnterPair(walker, keyType, valueType, value))
+				object? keyValuePair = type.GetMethod("op_Implicit")?.Invoke(null, [value])!;
+				if (EnterPair(walker, keyType, valueType, keyValuePair))
 				{
 					VisitValue(walker, walkType, keyType, type.GetProperty(nameof(AssetPair<int, int>.Key))?.GetValue(value)!);
-					DividePair(walker, keyType, valueType, value);
+					DividePair(walker, keyType, valueType, keyValuePair);
 					VisitValue(walker, walkType, valueType, type.GetProperty(nameof(AssetPair<int, int>.Value))?.GetValue(value)!);
-					ExitPair(walker, keyType, valueType, value);
+					ExitPair(walker, keyType, valueType, keyValuePair);
 				}
 			}
 			else

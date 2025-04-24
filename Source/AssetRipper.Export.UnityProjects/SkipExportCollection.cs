@@ -1,8 +1,5 @@
 ﻿using AssetRipper.Assets;
 using AssetRipper.Assets.Collections;
-using AssetRipper.Assets.Export;
-using AssetRipper.Assets.Metadata;
-using AssetRipper.IO.Files;
 using AssetRipper.IO.Files.SerializedFiles;
 
 namespace AssetRipper.Export.UnityProjects
@@ -15,7 +12,7 @@ namespace AssetRipper.Export.UnityProjects
 			m_asset = asset ?? throw new ArgumentNullException(nameof(asset));
 		}
 
-		public bool Export(IExportContainer container, string projectDirectory)
+		public bool Export(IExportContainer container, string projectDirectory, FileSystem fileSystem)
 		{
 			return false;
 		}

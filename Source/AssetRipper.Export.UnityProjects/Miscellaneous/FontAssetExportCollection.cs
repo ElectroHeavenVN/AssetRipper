@@ -1,7 +1,5 @@
 ﻿using AssetRipper.Assets;
 using AssetRipper.Assets.Cloning;
-using AssetRipper.Assets.Export;
-using AssetRipper.Assets.Metadata;
 using AssetRipper.Export.UnityProjects.Project;
 using AssetRipper.SourceGenerated.Classes.ClassID_1042;
 using AssetRipper.SourceGenerated.Classes.ClassID_128;
@@ -10,7 +8,6 @@ using AssetRipper.SourceGenerated.Classes.ClassID_27;
 using AssetRipper.SourceGenerated.Enums;
 using AssetRipper.SourceGenerated.Extensions;
 using AssetRipper.SourceGenerated.Subclasses.PPtr_Font;
-using System.Buffers.Binary;
 using System.Diagnostics;
 
 namespace AssetRipper.Export.UnityProjects.Miscellaneous
@@ -70,9 +67,7 @@ namespace AssetRipper.Export.UnityProjects.Miscellaneous
 
 		protected override string GetExportExtension(IUnityObjectBase asset)
 		{
-			byte[] fontData = ((IFont)asset).FontData;
-			uint type = BinaryPrimitives.ReadUInt32LittleEndian(fontData);
-			return type == OttoAsciiFourCC ? "otf" : "ttf";
+			return ((IFont)asset).GetFontExtension();
 		}
 
 		protected override long GenerateExportID(IUnityObjectBase asset)
@@ -84,10 +79,5 @@ namespace AssetRipper.Export.UnityProjects.Miscellaneous
 
 			//The font texture is assumed to be 2800000, but has not been verified.
 		}
-
-		/// <summary>
-		/// OTTO ascii
-		/// </summary>
-		private const int OttoAsciiFourCC = 0x4F54544F;
 	}
 }

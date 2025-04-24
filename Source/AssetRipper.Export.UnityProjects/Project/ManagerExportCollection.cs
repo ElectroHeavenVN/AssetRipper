@@ -1,24 +1,21 @@
 ﻿using AssetRipper.Assets;
-using AssetRipper.Assets.Export;
-using AssetRipper.Assets.Metadata;
-using AssetRipper.SourceGenerated.Classes.ClassID_6;
 
 namespace AssetRipper.Export.UnityProjects.Project
 {
-	public class ManagerExportCollection : AssetExportCollection<IGlobalGameManager>
+	public class ManagerExportCollection : AssetExportCollection<IUnityObjectBase>
 	{
-		public ManagerExportCollection(IAssetExporter assetExporter, IGlobalGameManager asset) : base(assetExporter, asset) { }
+		public ManagerExportCollection(IAssetExporter assetExporter, IUnityObjectBase asset) : base(assetExporter, asset) { }
 
-		public override bool Export(IExportContainer container, string projectDirectory)
+		public override bool Export(IExportContainer container, string projectDirectory, FileSystem fileSystem)
 		{
-			string subPath = Path.Combine(projectDirectory, ProjectSettingsName);
+			string subPath = fileSystem.Path.Join(projectDirectory, ProjectSettingsName);
 			string name = GetCorrectName(Asset.ClassName);
 			string fileName = $"{name}.asset";
-			string filePath = Path.Combine(subPath, fileName);
+			string filePath = fileSystem.Path.Join(subPath, fileName);
 
-			Directory.CreateDirectory(subPath);
+			fileSystem.Directory.Create(subPath);
 
-			ExportInner(container, filePath, projectDirectory);
+			ExportInner(container, filePath, projectDirectory, fileSystem);
 			return true;
 		}
 
@@ -40,7 +37,7 @@ namespace AssetRipper.Export.UnityProjects.Project
 		{
 			return typeName switch
 			{
-				PlayerSettingsName => ProjectSettingsName,
+				PlayerSettingsName or "129" => ProjectSettingsName,
 				NavMeshProjectSettingsName => NavMeshAreasName,
 				PhysicsManagerName => DynamicsManagerName,
 				_ => typeName,

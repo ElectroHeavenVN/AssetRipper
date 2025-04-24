@@ -1,5 +1,5 @@
-using AsmResolver.DotNet.Signatures.Types;
-using AsmResolver.PE.DotNet.Metadata.Tables.Rows;
+using AsmResolver.DotNet.Signatures;
+using AsmResolver.PE.DotNet.Metadata.Tables;
 
 namespace AssetRipper.Import.Structure.Assembly
 {
@@ -20,6 +20,8 @@ namespace AssetRipper.Import.Structure.Assembly
 		Single,
 		Double,
 		String,
+		Pair,
+		MapPair,
 		Complex,
 	}
 
@@ -30,11 +32,11 @@ namespace AssetRipper.Import.Structure.Assembly
 			switch (_this)
 			{
 				case PrimitiveType.Bool:
-				case PrimitiveType.Char:
 				case PrimitiveType.Byte:
 				case PrimitiveType.SByte:
 					return 1;
 
+				case PrimitiveType.Char:
 				case PrimitiveType.Short:
 				case PrimitiveType.UShort:
 				case PrimitiveType.Half:
@@ -50,6 +52,8 @@ namespace AssetRipper.Import.Structure.Assembly
 				case PrimitiveType.Double:
 					return 8;
 
+				case PrimitiveType.Pair:
+				case PrimitiveType.MapPair:
 				case PrimitiveType.String:
 				case PrimitiveType.Complex:
 					return -1;

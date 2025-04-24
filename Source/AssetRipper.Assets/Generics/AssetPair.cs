@@ -1,6 +1,6 @@
 ﻿namespace AssetRipper.Assets.Generics
 {
-	public sealed class AssetPair<TKey, TValue> : AccessPairBase<TKey, TValue>
+	public sealed class AssetPair<TKey, TValue> : AccessPairBase<TKey, TValue>, IEquatable<AssetPair<TKey, TValue>>
 		where TKey : notnull, new()
 		where TValue : notnull, new()
 	{
@@ -47,6 +47,13 @@
 			{
 				throw new NotSupportedException($"Only immutable values can be used in the setter for {nameof(Value)}.");
 			}
+		}
+
+		bool IEquatable<AssetPair<TKey, TValue>>.Equals(AssetPair<TKey, TValue>? other) => Equals(other);
+
+		public static implicit operator KeyValuePair<TKey, TValue>(AssetPair<TKey, TValue> pair)
+		{
+			return new KeyValuePair<TKey, TValue>(pair.Key, pair.Value);
 		}
 	}
 }

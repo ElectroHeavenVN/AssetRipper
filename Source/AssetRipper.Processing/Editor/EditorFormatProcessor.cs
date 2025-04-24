@@ -1,13 +1,14 @@
 using AssetRipper.Assets;
 using AssetRipper.Assets.Bundles;
 using AssetRipper.Assets.Collections;
-using AssetRipper.Import.Configuration;
+using AssetRipper.Import.AssetCreation;
 using AssetRipper.Import.Logging;
 using AssetRipper.Import.Structure.Assembly.Managers;
+using AssetRipper.Import.Structure.Assembly.Serializable;
 using AssetRipper.IO.Files.SerializedFiles;
 using AssetRipper.Processing.AnimationClips;
+using AssetRipper.Processing.Configuration;
 using AssetRipper.SourceGenerated.Classes.ClassID_1;
-using AssetRipper.SourceGenerated.Classes.ClassID_129;
 using AssetRipper.SourceGenerated.Classes.ClassID_142;
 using AssetRipper.SourceGenerated.Classes.ClassID_147;
 using AssetRipper.SourceGenerated.Classes.ClassID_157;
@@ -23,6 +24,7 @@ using AssetRipper.SourceGenerated.Classes.ClassID_47;
 using AssetRipper.SourceGenerated.Classes.ClassID_687078895;
 using AssetRipper.SourceGenerated.Classes.ClassID_74;
 using AssetRipper.SourceGenerated.Classes.ClassID_78;
+using AssetRipper.SourceGenerated.Classes.ClassID_850595691;
 using AssetRipper.SourceGenerated.Enums;
 using AssetRipper.SourceGenerated.Extensions;
 
@@ -120,24 +122,42 @@ namespace AssetRipper.Processing.Editor
 				case IResourceManager resourceManager:
 					OriginalPathHelper.SetOriginalPaths(resourceManager);
 					break;
-				case IPlayerSettings playerSettings:
-					playerSettings.AllowUnsafeCode = true;
+				case TypeTreeObject { IsPlayerSettings: true } playerSettings:
+					SerializableStructure editorStructure = playerSettings.EditorFields;
+					if (editorStructure.ContainsField("webGLLinkerTarget"))
+					{
+						editorStructure["webGLLinkerTarget"].AsInt32 = 1;
+					}
+					if (editorStructure.ContainsField("allowUnsafeCode"))
+					{
+						editorStructure["allowUnsafeCode"].AsBoolean = true;
+					}
+					ApiCompatibilityLevel compatibilityLevel;
+					ScriptingRuntimeVersion runtimeVersion;
 					if (HasMscorlib2())
 					{
-						playerSettings.ApiCompatibilityLevelE = ApiCompatibilityLevel.NET_2_0;
-						playerSettings.ScriptingRuntimeVersionE = ScriptingRuntimeVersion.Legacy;
+						compatibilityLevel = ApiCompatibilityLevel.NET_2_0;
+						runtimeVersion = ScriptingRuntimeVersion.Legacy;
 					}
 					else
 					{
-						playerSettings.ApiCompatibilityLevelE = ApiCompatibilityLevel.NET_Unity_4_8;
-						playerSettings.ScriptingRuntimeVersionE = ScriptingRuntimeVersion.Latest;
+						compatibilityLevel = ApiCompatibilityLevel.NET_Unity_4_8;
+						runtimeVersion = ScriptingRuntimeVersion.Latest;
+					}
+					if (editorStructure.ContainsField("apiCompatibilityLevel"))
+					{
+						editorStructure["apiCompatibilityLevel"].AsInt32 = (int)compatibilityLevel;
+					}
+					if (editorStructure.ContainsField("scriptingRuntimeVersion"))
+					{
+						editorStructure["scriptingRuntimeVersion"].AsInt32 = (int)runtimeVersion;
 					}
 					break;
 			}
 
 			bool HasMscorlib2()
 			{
-				return assemblyManager!.GetAssemblies().FirstOrDefault(a => a.Name == "mscorlib")?.Version.Major == 2;
+				return assemblyManager!.Mscorlib?.Version.Major == 2;
 			}
 		}
 
@@ -169,6 +189,9 @@ namespace AssetRipper.Processing.Editor
 					break;
 				case ILightmapSettings lightmapSettings:
 					lightmapSettings.ConvertToEditorFormat();
+					break;
+				case ILightingSettings lightingSettings:
+					lightingSettings.ConvertToEditorFormat();
 					break;
 			}
 		}

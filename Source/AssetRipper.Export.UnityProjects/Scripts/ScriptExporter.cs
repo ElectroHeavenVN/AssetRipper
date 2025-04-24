@@ -1,9 +1,7 @@
 ﻿using AssetRipper.Assets;
-using AssetRipper.Assets.Metadata;
 using AssetRipper.Export.UnityProjects.Configuration;
 using AssetRipper.Import.Structure.Assembly;
 using AssetRipper.Import.Structure.Assembly.Managers;
-using AssetRipper.IO.Files;
 using AssetRipper.SourceGenerated;
 using AssetRipper.SourceGenerated.Classes.ClassID_115;
 
@@ -18,6 +16,7 @@ namespace AssetRipper.Export.UnityProjects.Scripts
 			{
 				LanguageVersion = configuration.ExportSettings.ScriptLanguageVersion.ToCSharpLanguageVersion(configuration.Version),
 				ScriptContentLevel = configuration.ImportSettings.ScriptContentLevel,
+				FullyQualifiedTypeNames = configuration.ExportSettings.ScriptTypesFullyQualified,
 			};
 			ExportMode = configuration.ExportSettings.ScriptExportMode;
 		}
